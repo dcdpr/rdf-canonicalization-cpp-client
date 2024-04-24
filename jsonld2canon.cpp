@@ -1,12 +1,12 @@
-// Example application showing how the jsonld-cpp library could be
-// used. Not yet meant to be the very best example.
+// Example application showing how the rdf-canonicalization-cpp library
+// could be used. Not yet meant to be the very best example.
 
 // This application reads a jsonld file and, if possible, outputs
 // a normalized RDF dataset in NQuads format. This can then be piped
 // to a hashing utility like sha256sum and used to compare with RDF
 // generated from other documents.
 
-// Usage: jsonld2rdf <filename>
+// Usage: jsonld2canon <filename>
 
 #include <jsonld-cpp/FileLoader.h>
 #include <jsonld-cpp/JsonLdOptions.h>

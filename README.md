@@ -1,16 +1,17 @@
-# jsonld-cpp-client
+# rdf-canonicalization-cpp-client
 
-This is a simple client application for testing the [jsonld-cpp library](https://github.com/dcdpr/jsonld-cpp)
+This is a simple client application for testing the [rdf-canonicalization-cpp library](https://github.com/dcdpr/rdf-canonicalization-cpp)
 
-## Building jsonld-cpp-client
+## Building rdf-canonicalization-cpp-client
 
-To build jsonld-cpp-client, you will need:
+To build rdf-canonicalization-cpp-client, you will need:
 
 * cmake
 * g++, clang or Visual Studio (community edition)
 * [jsonld-cpp](https://github.com/dcdpr/jsonld-cpp) installed locally
+* [rdf-canonicalization-cpp](https://github.com/dcdpr/rdf-canonicalization-cpp) installed locally
 
-jsonld-cpp-client uses a pretty standard cmake build system:
+rdf-canonicalization-cpp-client uses a pretty standard cmake build system:
 
 ```
 mkdir build
@@ -19,7 +20,7 @@ cmake ..
 make
 ```
 
-If `jsonld-cpp` is not installed to a standard location, you will need to provide `cmake` with a prefix path:
+If `jsonld-cpp` and `rdf-canonicalization-cpp` are not installed to a standard location, you will need to provide `cmake` with a prefix path:
 
 ```
 cmake -DCMAKE_PREFIX_PATH=/tmp/jsonld-install ..
@@ -34,11 +35,11 @@ prerequisites. For example, on a fresh Debian Bullseye system:
 $ sudo apt install make cmake gcc g++
 ```
 
-After that, make sure you can build and install `jsonld-cpp`. See its [documentation](https://github.com/dcdpr/jsonld-cpp) for more details.
+After that, make sure you can build and install `jsonld-cpp` and `rdf-canonicalization-cpp`. See their documention: [jsonld-cpp](https://github.com/dcdpr/jsonld-cpp) and [rdf-canonicalization-cpp](https://github.com/dcdpr/rdf-canonicalization-cpp) for more details.
 
 ## Samples
 
-There are two command line applications included in jsonld-cpp-client and a couple of sample JSON-LD files to use.
+There is a command line application included in rdf-canonicalization-cpp-client and a couple of sample JSON-LD files to use.
 
 ```shell
 > cat ../samples/ex01a.jsonld
@@ -70,55 +71,12 @@ There are two command line applications included in jsonld-cpp-client and a coup
 { "@context": { "name": "http://xmlns.com/foaf/0.1/name", "isKnownBy": { "@reverse": "http://xmlns.com/foaf/0.1/knows", "@container": "@index" } }, "@id": "http://example.com/people/markus", "isKnownBy": { "Dave": { "@id": "http://example.com/people/dave", "name": "Dave Longley" }, "Gregg": { "@id": "http://example.com/people/gregg", "name": "Gregg Kellogg" } }, "name": "Markus Lanthaler" } 
 ```
 
-### expand-jsonld
+### jsonld2canon
 
-`expand-jsonld` will take a JSON-LD file and run the ['expansion'](https://www.w3.org/TR/json-ld-api/#expansion) algorithm. The expanded file will be output to the terminal.
-
-```shell
-> ./expand-jsonld ../samples/ex01a.jsonld  | jq
-```
-```json
-[
-  {
-    "@id": "http://example.com/people/markus",
-    "@reverse": {
-      "http://xmlns.com/foaf/0.1/knows": [
-        {
-          "@id": "http://example.com/people/dave",
-          "@index": "Dave",
-          "http://xmlns.com/foaf/0.1/name": [
-            {
-              "@value": "Dave Longley"
-            }
-          ]
-        },
-        {
-          "@id": "http://example.com/people/gregg",
-          "@index": "Gregg",
-          "http://xmlns.com/foaf/0.1/name": [
-            {
-              "@value": "Gregg Kellogg"
-            }
-          ]
-        }
-      ]
-    },
-    "http://xmlns.com/foaf/0.1/name": [
-      {
-        "@value": "Markus Lanthaler"
-      }
-    ]
-  }
-]
-```
-
-
-### jsonld2rdf
-
-`jsonld2rdf` can convert a JSON-LD document into normalized RDF data in NQuads format. This program first runs the ['expansion'](https://www.w3.org/TR/json-ld-api/#expansion) algorithm, then converts the JSON-LD to RDF using ['RDF serialization](https://www.w3.org/TR/json-ld-api/#rdf-serialization-deserialization), and will finally ['normalize'](https://json-ld.github.io/rdf-dataset-canonicalization/spec/index.html#canonicalization) (or 'canonicalize') the result. The normalized RDF data will be output to the terminal.
+`jsonld2canon` can convert a JSON-LD document into canonicalized RDF data in NQuads format. This program first runs the ['expansion'](https://www.w3.org/TR/json-ld-api/#expansion) algorithm, then converts the JSON-LD to RDF using ['RDF serialization](https://www.w3.org/TR/json-ld-api/#rdf-serialization-deserialization), and will finally ['canonicalize'](https://json-ld.github.io/rdf-dataset-canonicalization/spec/index.html#canonicalization) (or 'normalize') the result. The canonicalized RDF data will be output to the terminal.
 
 ```shell
-> ./jsonld2rdf ../samples/ex01a.jsonld
+> ./jsonld2canon ../samples/ex01a.jsonld
 ```
 ```
 <http://example.com/people/dave> <http://xmlns.com/foaf/0.1/knows> <http://example.com/people/markus> .
@@ -129,7 +87,7 @@ There are two command line applications included in jsonld-cpp-client and a coup
 ```
 
 
-One could use `jsonld2rdf` with the two sample files included to show how the normalized RDF can be hashed to prove that the two documents are equivalent:
+One could use `jsonld2canon` with the two sample files included to show how the canonicalized RDF data can be hashed to prove that the two documents are equivalent:
 
 ```shell
 > ./jsonld2rdf ../samples/ex01a.jsonld | shasum -a 256
